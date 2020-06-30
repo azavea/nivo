@@ -36,18 +36,38 @@ const TooltipWrapper = ({ position, anchor, children }) => {
         let y = Math.round(position[1])
 
         if (anchor === 'top') {
-            x -= bounds.width / 2
-            y -= bounds.height + TOOLTIP_OFFSET
-        } else if (anchor === 'right') {
+            if (dimensions[1] + TOOLTIP_OFFSET > y) {
+                // If the tooltip would go off the top, anchor it below instead
+                anchor = 'bottom';
+            } else {
+                x -= dimensions[0] / 2;
+                y -= dimensions[1] + TOOLTIP_OFFSET;
+           }
+         }
+
+        if (anchor === 'top') {
+            // Switch to 'bottom' if it would end up cut off at the top
+            if (anchor === 'top') {
+              x -= dimensions[0] / 2;
+              y -= Math.min(y, dimensions[1] + TOOLTIP_OFFSET);
+            } else {
+              x -= bounds.width / 2
+              y -= bounds.height + TOOLTIP_OFFSET
+            }
+        }
+        if (anchor === 'right') {
             x += TOOLTIP_OFFSET
             y -= bounds.height / 2
-        } else if (anchor === 'bottom') {
+        }
+        if (anchor === 'bottom') {
             x -= bounds.width / 2
             y += TOOLTIP_OFFSET
-        } else if (anchor === 'left') {
+        }
+        if (anchor === 'left') {
             x -= bounds.width + TOOLTIP_OFFSET
             y -= bounds.height / 2
-        } else if (anchor === 'center') {
+        }
+        if (anchor === 'center') {
             x -= bounds.width / 2
             y -= bounds.height / 2
         }
